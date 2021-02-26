@@ -296,11 +296,12 @@ import axios from "axios";
       //this.clear_array()
       
       // eliminite undefined
-      const newArr = this.students.filter((elem) => elem !== undefined);      
+/*       const newArr = this.students.filter((elem) => elem !== undefined);      
       newArr.forEach(newArr => {
         this.students.push(newArr);
       })
-      
+       */
+
       // get user input
       var i = this.editedItem.groupsize
       var m = this.set_class_size()
@@ -326,10 +327,11 @@ import axios from "axios";
       if (i == 2) {
           this.editedItem.student1 = s1
           this.editedItem.student2 = s2
-          this.students.splice(z, 1)
-          this.students.splice(x, 1)
+          var removed = this.students.splice(z, 1)
+          var removed2 = this.students.splice(x, 1)
+          console.log("REMOVED: " + removed + removed2);
+          console.log(this.students);
 
-          //console.log("deleted from array: " + d1 + d2)
           }
       else if (i == 3){
           this.editedItem.student1 = s1
@@ -338,6 +340,7 @@ import axios from "axios";
           this.students.splice(z, 1)
           this.students.splice(x, 1)
           this.students.splice(y, 1)
+          console.log(this.students)
           }
       else if (i == 4){
           this.editedItem.student1 = s1
@@ -433,7 +436,7 @@ import axios from "axios";
         this.students = students;
         },
       //methode zur Speicherung eines Termins mit POST in die DB
-      async save () {
+      /* async  */save () {
         if (this.editedIndex > -1) {
           // events is beeing edited
           Object.assign(this.projects[this.editedIndex], this.editedItem)
@@ -463,7 +466,7 @@ import axios from "axios";
 
             // new event will be pushed
             this.projects.push(this.editedItem)
-            await fetch(`/api/project`, {
+            /* await  */fetch(`/api/project`, {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(this.editedItem)
