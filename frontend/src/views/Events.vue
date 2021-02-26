@@ -293,14 +293,12 @@ import axios from "axios";
 
     // choose n students (n=groupsize) and save them in editItem
     setStudents() {
-      //this.clear_array()
-      
-      // eliminite undefined
-/*       const newArr = this.students.filter((elem) => elem !== undefined);      
+
+/*       const newArr = this.students.filter((elem) => elem !== undefined); 
+      console.log(newArr);     
       newArr.forEach(newArr => {
         this.students.push(newArr);
-      })
-       */
+      })  */
 
       // get user input
       var i = this.editedItem.groupsize
@@ -314,32 +312,41 @@ import axios from "axios";
           var y = this.getRandomInt(m)
           var k = this.getRandomInt(m)
 
-          var s1 = this.students[z]
-          var s2 = this.students[x]
-          var s3 = this.students[y]
-          var s4 = this.students[k]
           }
 
       while (
             z == x || z == y || z == k || x == y || x == k || y == k
             )
+      
+      var s1 = this.students[z]
+      var s2 = this.students[x]
+      var s3 = this.students[y]
+      var s4 = this.students[k]
+
+      while (s1 == undefined||s2 == undefined||s3 == undefined||s4 == undefined)
+      {
+        this.students.reverse()
+        this.students.copyWithin()
+      }
+
+      console.log("students per event: " + s1 + s2 + s3 + s4);
 
       if (i == 2) {
           this.editedItem.student1 = s1
           this.editedItem.student2 = s2
-          var removed = this.students.splice(z, 1)
+          var removed1 = this.students.splice(z, 1)
           var removed2 = this.students.splice(x, 1)
-          console.log("REMOVED: " + removed + removed2);
+          console.log("REMOVED: " + removed1 + removed2);
           console.log(this.students);
-
           }
       else if (i == 3){
           this.editedItem.student1 = s1
           this.editedItem.student2 = s2
           this.editedItem.student3 = s3
-          this.students.splice(z, 1)
-          this.students.splice(x, 1)
-          this.students.splice(y, 1)
+          var removed3 = this.students.splice(z, 1)
+          var removed4 = this.students.splice(x, 1)
+          var removed5 = this.students.splice(y, 1)
+          console.log("REMOVED: " + removed3 + removed4 + removed5);
           console.log(this.students)
           }
       else if (i == 4){
@@ -347,14 +354,18 @@ import axios from "axios";
           this.editedItem.student2 = s2
           this.editedItem.student3 = s3
           this.editedItem.student4 = s4
-          this.students.splice(z, 1)
-          this.students.splice(x, 1)
-          this.students.splice(y, 1)
-          this.students.splice(k, 1)
+          var removed6 = this.students.splice(z, 1)
+          var removed7 = this.students.splice(x, 1)
+          var removed8 = this.students.splice(y, 1)
+          var removed9 = this.students.splice(k, 1)
+          console.log("REMOVED: " + removed6 + removed7 + removed8 + removed9);
+          console.log(this.students)
           }
       else{
           this.editedItem.student1 = s1
-          this.students.splice(z, 1)
+          var removed10 = this.students.splice(z, 1)
+          console.log("REMOVED: " + removed10);
+          console.log(this.students)
           }
           
       },
