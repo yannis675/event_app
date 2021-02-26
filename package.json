@@ -1,0 +1,24 @@
+{
+  "name": "project-manager",
+  "version": "0.1.0",
+  "description": "project overview",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.it-tf.ch/binf2018a/werkstatt/project-manager.git"
+  },
+  "author": "Yannis Anderegg",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "knex": "^0.21.6",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.3.5"
+  },
+  "devDependencies": {
+    "vue-particles": "^1.0.9"
+  }
+}
