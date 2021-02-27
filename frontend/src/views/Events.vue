@@ -274,10 +274,30 @@ import axios from "axios";
             //console.log(person)
       },
 
+    autoinsert(){
+
+      var i = this.editedItem.groupsize
+      var m = this.set_class_size()
+
+      this.editedItem.student1 = this.students[0]
+      this.students.copyWithin(0, m)
+      this.students.pop()
+
+      console.log(this.editedItem.student1);
+      if (i > 1)
+      {
+      this.editedItem.student2 = this.students[0]
+      this.students.copyWithin(0, m)
+
+      }
+
+
+    },
+
     getRandomInt(max) {
       return Math.floor(Math.random() * Math.floor(max))
       },
-
+//todo!!!! arr length = classsize
     set_class_size(size){
       if(this.editedItem.class == this.classes[0]){
         size = this.class_size[0]
@@ -325,8 +345,11 @@ import axios from "axios";
 
       while (s1 == undefined||s2 == undefined||s3 == undefined||s4 == undefined)
       {
-        this.students.reverse()
-        this.students.copyWithin()
+        //this.students.copyWithin()
+        s1 = this.students[this.getRandomInt(m)]
+        s2 = this.students[this.getRandomInt(m)]
+        s3 = this.students[this.getRandomInt(m)]
+        s4 = this.students[this.getRandomInt(m)]
       }
 
       console.log("students per event: " + s1 + s2 + s3 + s4);
@@ -470,7 +493,9 @@ import axios from "axios";
           for (let i = 0; i < z; i++) {
 
             // TODO... method name change
-            this.setStudents()
+            //this.setStudents()
+
+            this.autoinsert()
 
             var newdate = this.setDate()
             this.editedItem.date = newdate;
