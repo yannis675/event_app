@@ -12,7 +12,6 @@
             <v-form>
               <v-text-field name="Username" label="Username" v-model="loginData.username"></v-text-field>
               <v-text-field name="Password" label="Password" type="password" v-model="loginData.password"></v-text-field>
-              
               <p style="color: red; text-align: center" v-if="msg">{{ msg }}</p>
             </v-form>
           </v-card-text>
@@ -42,15 +41,17 @@ export default {
 
   methods: {
     login() {
-      console.log(this.loginData)
+      //console.log(this.loginData)
       axios.post('/api/user/login', this.loginData)
       .then(resp => {
         let data = resp.data
+        console.log(data);
         if (data.token) {
           localStorage.setItem('token', data.token)
+          console.log("token set!");
           this.$router.push('/events')
         } else {
-          console.log("error");
+          console.log("error! no token");
         }
       })
     }

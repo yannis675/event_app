@@ -45,6 +45,17 @@
           @click:more="viewDay"
           @click:date="viewDay"
         ></v-calendar>
+      <v-calendar
+          ref="calendar"
+          v-model="focus2"
+          color="primary"
+          :events="events"
+          :event-color="getEventColor"
+          :type="type"
+          @click:event="showEvent"
+          @click:more="viewDay"
+          @click:date="viewDay"
+        ></v-calendar>
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -60,7 +71,6 @@
                 :color="selectedEvent.color"
                 dark
               >
-              
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
@@ -105,10 +115,12 @@
     </v-col>
   </v-row>
 </template> 
+
 <script>
   export default {
     data: () => ({
-      focus: new Date().toISOString().substr(0, 10),
+      focus: new Date(),
+      focus2: new Date(),
       type: 'month',
       selectedEvent: {},
       selectedElement: null,
@@ -122,13 +134,16 @@
     mounted () {
       this.$refs.calendar.checkChange()
       this.initialize()
+      let oneMonthLater = new Date(Date.now());
+      oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+      this.focus2 = oneMonthLater;
     },
     //Funktionsaufrufe beim starten der App (mounted)
     
     methods: {
       //fetch um Daten ins Frontend zu laden..
       initialize () {
-        fetch('api/project')
+        fetch('api/event')
           .then(response => response.json())
           .then(data => {
               data.forEach(element => {
@@ -145,8 +160,8 @@
                      details6: element.student4,
                      details7: element.teacher
                  }
-
                 this.events.push(event)
+                //console.log(this.events);
                });
           });
       },
@@ -163,10 +178,25 @@
         this.focus = ''
       },
       prev () {
-        this.$refs.calendar.prev()
+        let start1 = new Date(this.focus);
+        let start2 = new Date(this.focus2);
+
+        start1.setMonth(start1.getMonth() - 1);
+        start2.setMonth(start2.getMonth() - 1);
+
+        this.focus = start1;
+        this.focus2 = start2;
       },
+
       next () {
-        this.$refs.calendar.next()
+        let start1 = new Date(this.focus);
+        let start2 = new Date(this.focus2);
+
+        start1.setMonth(start1.getMonth() + 1);
+        start2.setMonth(start2.getMonth() + 1);
+
+        this.focus = start1;
+        this.focus2 = start2;
       },
       showEvent ({ nativeEvent, event }) {
         const open = () => {

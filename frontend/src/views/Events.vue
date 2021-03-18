@@ -60,7 +60,7 @@
                         ></v-select>
                       </v-row>
                     </v-container>
-
+<!-- 
                     <v-container fluid>
                       <v-select
                         v-model="editedItem.student1"
@@ -75,7 +75,7 @@
                           <v-divider class="mb-2"></v-divider>
                         </template>
                       </v-select>
-                    </v-container>
+                    </v-container> -->
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-row justify="center">
@@ -96,11 +96,11 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      <v-icon small class="mr-2" @click="editItem(item)" v-if="button">mdi-pencil</v-icon>
+      <v-icon small @click="deleteItem(item)" v-if="button">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="#b47bff" @click="noContent">Keine Termine vorhanden!</v-btn>
+      <v-btn color="#b47bff" @click="noContent">Noch keine Termine vorhanden!</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -113,14 +113,7 @@ export default {
     students: [],
     classes: [],
     timespans: ["1", "3", "6"],
-    teachers: [
-      "Altin Özcan",
-      "Heimberg Matthias",
-      "Fankhauser Claude",
-      "Iannatone Giulio",
-      "Berger Lukas",
-      "Heinzen Stephan",
-    ],
+    teachers: [],
     groupsize: ["1", "2", "3", "4"],
     dialog: false,
     //array-objekt zum anzeigen der Termindaten
@@ -187,7 +180,7 @@ export default {
 
     //fetch um alle daten aus dem Backend zu holen
     initialize() {
-      fetch("api/project")
+      fetch("api/event")
         .then((response) => response.json())
         .then((data) => {
           //console.log(data)
@@ -210,13 +203,13 @@ export default {
     deleteItem(item) {
       const index = this.projects.indexOf(item);
       this.projects.splice(index, 1);
-      fetch(`/api/project/${item.id}`, {
+      fetch(`/api/event/${item.id}`, {
         method: "DELETE",
       })
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-        });
+        }); 
     },
 
     //dialog schliessen - Methode
@@ -229,11 +222,25 @@ export default {
     },
     // get all classes for dropdown list
     async get_class() {
-      let response = await axios.get("/api/class_size"); // TODO : change name of endpoint!!
+      let response = await axios.get("/api/get_class");
+      console.log(response.data);
       this.classes = response.data;
+
+
+      response.data.forEach((classes) => {
+      this.teachers.push(classes.teacher);})
     },
 
-    async get_students() {
+/*     get_students() {
+      let classname = this.editedItem.class;
+      let response = axios.get("/api/test", classname);
+      response.data.forEach((person) => {
+        this.students.push(person.name);
+        console.log(this.students);
+      });
+    }, */
+
+     async get_students() {
       // get class name and clear array
       let classname = this.editedItem.class;
       this.students = [];
@@ -246,7 +253,7 @@ export default {
         this.students.push(person.name);
       });
 
-      console.log("this.students:" + this.students);
+      //console.log("this.students:" + this.students);
     },
 
     //methode zur Speicherung eines Termins mit POST in die DB
@@ -254,7 +261,7 @@ export default {
       if (this.editedIndex > -1) {
         // Editing
         Object.assign(this.projects[this.editedIndex], this.editedItem);
-        fetch(`/api/project/${this.editedItem.id}`, {
+        fetch(`/api/event/${this.editedItem.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this.editedItem),
@@ -263,9 +270,9 @@ export default {
           .then((data) => {
             console.log("EventData:" + data);
           });
+          this.close();
       } else {
         // Saving
-
         //sort array randomly
         this.students = this.randomSort(this.students);
         console.log(this.students);
@@ -281,7 +288,7 @@ export default {
           this.editedItem.date = newdate;
 
           // new event will be pushed
-          fetch(`/api/project`, {
+          fetch(`/api/event`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(this.editedItem),

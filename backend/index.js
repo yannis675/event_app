@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs')
 const app = express();
 app.use(express.json())
 
@@ -15,48 +16,36 @@ const pepper = "secret";
 
 // serve api
 app.use('/api/*', express.json())
-app.use('/api/project', require('./api/project'))
- 
+app.use('/api/event', require('./api/event'))
+    
 
-//credential is what is typed in login form
 app.post('/api/user/login', async (req,res)=> {
   let credentials = req.body
   console.log(credentials);
-  let answer = await knex('users')
+  let answer =  await knex('users')
   .where('username', credentials.username)
-  .where('password', credentials.password)
   let user = answer[0]
-  if (user) {
-      console.log(user);
-        // if user is not in database it will be null
-        if (user.password === credentials.password) {
+  console.log(user);
+  let test = bcrypt.compareSync(credentials.password, user.password)
+  if (test) {
+          // if user is not in database it will be null
           let payload = {username:user.Username, role:user.role}
           let token = jwt.sign(payload, pepper)
           res.json({ 
             token: token
           })
-        } 
   }
-      else {
-          res.json()
+  else {
+      res.json()
       }
 })
 
-app.get('/api/person', async (req, res) => {
-  let person = await knex
-  .from('students')
-  .select('name')
-  res.send(person)
-  })
 
 app.get('/api/inf18', async (req, res) => {
-  let info = /* req.body */"inf18";
-  console.log(info)
-  //let info = "inf18"
   let person = await knex
   .from('students')
   .select('name')
-  .where('class', info)
+  .where('class', 'inf18')
   res.send(person)
   })
 
@@ -64,7 +53,7 @@ app.get('/api/inf19', async (req, res) => {
   let person = await knex
   .from('students')
   .select('name')
-  .where({ class: "inf19"})
+  .where('class', 'inf19')
   res.send(person)
   })
 
@@ -72,33 +61,25 @@ app.get('/api/inf20', async (req, res) => {
   let person = await knex
   .from('students')
   .select('name')
-  .where({ class: "inf20"})
+  .where('class', 'inf20')
   res.send(person)
   })
-  
-app.get('/api/classes', async (req, res) => {
+
+/*   app.get('/api/test', async (req, res) => {
+    let info = req.body
+    let person = await knex
+    .from('students')
+    .select('name')
+    .where('class', 'inf20')
+    res.send(person)
+    }) */
+
+app.get('/api/get_class', async (req, res) => {
   let classes = await knex
   .from('classes')
   .select('class')
+  .select('teacher')
   res.send(classes)
   })
-
-app.get('/api/class_size', async (req, res) => {
-  let class_size = await knex
-  .from('classes')
-  .select('class')
-  .select('class_size')
-  res.send(class_size)
-  })
-
-  app.get('/api/pre_students', async (req, res) => {
-    let students = await knex
-    .from('events')
-    .select('student1')
-    .select('student2')
-    .select('student3')
-    .select('student4')
-    res.send(students)
-    })
 
 app.listen(port, () => console.log(`App listening on port: ${port}!`));

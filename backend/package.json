@@ -6,15 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Samuel Hess",
+  "author": "Yannis Anderegg",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.5",
     "mysql": "^2.18.1",
-    "mysql2": "^2.1.0",
-    "sequelize": "^6.3.4",
-    "sqlite": "^4.0.19"
+    "mysql2": "^2.1.0"
   }
 }

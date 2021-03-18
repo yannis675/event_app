@@ -15,8 +15,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "knex": "^0.21.6",
-    "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5"
+    "mysql2": "^2.2.5"
   },
   "devDependencies": {
     "vue-particles": "^1.0.9"

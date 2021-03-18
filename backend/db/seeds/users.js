@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs')
+let defaultPassword = '12345'
+let hash = bcrypt.hashSync(defaultPassword)
 
 exports.seed = function (knex) {
   // Deletes existing data
@@ -5,8 +8,7 @@ exports.seed = function (knex) {
     .then(function () {
   // Inserts new Data
       return knex('users').insert([
-        { username: 'admin', firstname: 'John', lastname: 'Doe', password: '123' },
-        { username: 'yannis', firstname: 'yannis', lastname: 'anderegg', password: '12345' },
+        { username: 'admin', firstname: 'John', lastname: 'Doe', password: bcrypt.hashSync('12345') },
       ]);
     });
 };

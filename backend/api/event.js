@@ -1,15 +1,15 @@
 const connection = require('../db/knexfile').development
 const knex = require('knex')(connection)
 const express = require('express')
-const router = express.Router()
+const app = express.Router()
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   knex('events').then(result => {res.json(result)})
   .catch(err => console.log(err))
 })
 //gibt alle Projekte aus
 
-router.get('/:id', (req, res) => {
+app.get('/:id', (req, res) => {
   let id = req.params.id
   knex('events').where('id',id)
   .then(result => res.json(result))
@@ -17,7 +17,7 @@ router.get('/:id', (req, res) => {
 })
 //gibt bestimmtes Projekt nach ID aus
 
-router.post('/', (req, res) => {
+app.post('/', (req, res) => {
   let record = req.body
   knex('events').insert(record)
   .then(result => res.json(result))
@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
 })
 //inserted ein Projekt
 
-router.put('/:id', (req, res) => {
+app.put('/:id', (req, res) => {
   let record = req.body
   let id = req.params.id
   knex('events').update(record).where('id',id)
@@ -35,7 +35,7 @@ router.put('/:id', (req, res) => {
 })
 //updatet ein Projekt
 
-router.delete('/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
   let id = req.params.id
   knex('events').delete().where('id',id)
   .then(result => res.json(result))
@@ -43,4 +43,4 @@ router.delete('/:id', (req, res) => {
 })
 //löscht ein Projekt
 
-module.exports = router
+module.exports = app
