@@ -1,6 +1,11 @@
+/* Author: Y.Anderegg
+Date: 17.03.2021
+Topic: Eventmanager IPA 2021 */
+
 <template>
   <v-app>
     <div id="nav">
+      <!-- navbar displayed on each site -->
       <router-link to="/Events">
         <v-btn value="recent">
           Termine
@@ -11,6 +16,7 @@
           Kalender
         </v-btn>
       </router-link>
+      <!-- if a user is logged in the logout button is displayed -->
         <v-btn v-if="isLoggedIn" href="/" @click="logout" text>
           <span class="secondary--text mr-2" prepend-icon="mdi-folder">Logout</span>
           <v-icon v-if="isLoggedIn">mdi-logout</v-icon>
@@ -27,6 +33,7 @@
 <script>
   export default {
     data() {
+      //on default no one is logged in
       return {
         isLoggedIn: false,
       };
@@ -37,16 +44,17 @@
       //Checks if Token is there
       if (!token) {
         this.isLoggedIn = false;
-        //Sets Login on false if there is no Token
+        //Sets the Login on false if there is NO Token!
         if (this.$router.history.current.name !== "login") {
           this.$router.push("/login");
         }
+        //if theres a token loggedIn is set on true
       } else {
         this.isLoggedIn = true;
       }
     },
     methods: {
-      //Default the Variable "isLoggedIN" is Set on "false" and if the User is Logged in it is then set to "True"
+      //default the Variable "isLoggedIN" is Set on "false" and if the User is Logged in it is then set to "True"
       loggedIn() {
         this.isLoggedIn = true;
       },
@@ -60,7 +68,7 @@
 </script>
 
 <style>
-/*  @import "./styles/main.css"; */
+  /* style elements in CSS*/
   #nav {
     margin-bottom: 20px;
     margin-top: 20px;

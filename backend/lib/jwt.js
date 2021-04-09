@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const JWT_SECRET = process.env.JWT_SECRET || 'Geheimnis'
+const JWT_SECRET = process.env.JWT_SECRET || 'Secret'
 
 function createToken(payload, lifetime) {
   let token = { header:{}, payload:{} }
@@ -18,7 +18,7 @@ function signToken(token) {
   let signature = crypto
     .createHmac('sha256', JWT_SECRET)
     .update(headerEncoded + '.' + payloadEncoded )
-    .digest('base64') // result is base64, but we need base64-url
+    .digest('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); 
 
   return `${headerEncoded}.${payloadEncoded}.${signature}`
@@ -26,9 +26,9 @@ function signToken(token) {
 
 function encodeBase64Url(string) {
   let base64Url = Buffer.from(string).toString('base64')
-    .replace(/\+/g, '-') // replace + with -
-    .replace(/\//g, '_') // replace / with _
-    .replace(/=+$/, ''); // remove = at the end
+    .replace(/\+/g, '-') 
+    .replace(/\//g, '_') 
+    .replace(/=+$/, ''); 
   return base64Url
 }
 

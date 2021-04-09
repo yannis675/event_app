@@ -1,46 +1,51 @@
-const connection = require('../db/knexfile').development
-const knex = require('knex')(connection)
-const express = require('express')
-const app = express.Router()
+/* Author: Y.Anderegg
+Date: 17.03.2021
+Topic: Eventmanager IPA 2021 */
 
-app.get('/', (req, res) => {
-  knex('events').then(result => {res.json(result)})
+//All the necessary imports (KNEXfile for DB-CONNECTION)
+const CONNECTION = require('../db/KNEXfile').development
+const KNEX = require('KNEX')(CONNECTION)
+const EXPRESS = require('EXPRESS')
+const APP = EXPRESS.Router()
+
+//Base-URL Endpoint, returns all Records from "Event" (Table)
+APP.get('/', (req, res) => {
+  KNEX('events').then(result => {res.json(result)})
   .catch(err => console.log(err))
 })
-//gibt alle Projekte aus
 
-app.get('/:id', (req, res) => {
+//Returns a specific Record from "Events"
+APP.get('/:id', (req, res) => {
   let id = req.params.id
-  knex('events').where('id',id)
+  KNEX('events').where('id',id)
   .then(result => res.json(result))
   .catch(err => console.log(err))
 })
-//gibt bestimmtes Projekt nach ID aus
 
-app.post('/', (req, res) => {
+//Inserts Record into "Events"
+APP.post('/', (req, res) => {
   let record = req.body
-  knex('events').insert(record)
+  KNEX('events').insert(record)
   .then(result => res.json(result))
   .catch(err => console.log(err))
   console.log (record)
 })
-//inserted ein Projekt
 
-app.put('/:id', (req, res) => {
+//Updates Record in "Events"
+APP.put('/:id', (req, res) => {
   let record = req.body
   let id = req.params.id
-  knex('events').update(record).where('id',id)
+  KNEX('events').update(record).where('id',id)
   .then(result => res.json(result))
   .catch(err => console.log(err))
 })
-//updatet ein Projekt
 
-app.delete('/:id', (req, res) => {
+//Deletes certain Record from "Events"
+APP.delete('/:id', (req, res) => {
   let id = req.params.id
-  knex('events').delete().where('id',id)
+  KNEX('events').delete().where('id',id)
   .then(result => res.json(result))
   .catch(err => console.log(err))
 })
-//löscht ein Projekt
 
-module.exports = app
+module.exports = APP

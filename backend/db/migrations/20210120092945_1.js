@@ -1,4 +1,8 @@
-// Creates Table with Attributes
+/* Author: Y.Anderegg
+Date: 17.03.2021
+Topic: Eventmanager IPA 2021 */
+
+// Creates Table with the Attributes 
 exports.up = function(knex) {
     return knex.schema.createTable('users', (table) => {
       table.increments('id')
@@ -9,6 +13,7 @@ exports.up = function(knex) {
     })
   };
   
+  //If Table already exists
   exports.down = function(knex) {
     return knex.schema.dropTableIfExists('users')
   };

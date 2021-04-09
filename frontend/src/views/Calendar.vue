@@ -1,3 +1,7 @@
+/* Author: Y.Anderegg
+Date: 17.03.2021
+Topic: Eventmanager IPA 2021 */
+
 <template>
   <v-row class="fill-height">
     <v-col>
@@ -5,6 +9,7 @@
         <v-toolbar
           flat
         >
+        <!-- Toolbar for the switches to next/previous Month -->
           <v-btn
             fab
             text
@@ -12,6 +17,7 @@
             color="grey darken-2"
             @click="prev"
           >
+          <!-- Icon to move one Month back -->
             <v-icon small>
               mdi-chevron-left
             </v-icon>
@@ -23,6 +29,7 @@
             color="grey darken-2"
             @click="next"
           >
+          <!-- Icon to move one Month forward -->
             <v-icon small>
               mdi-chevron-right
             </v-icon>
@@ -34,9 +41,11 @@
         </v-toolbar>
       </v-sheet>
       <v-sheet height="600">
+        <!-- The calendar Obejct is made with "v-calendar" -->
+        <!-- It gets the Events with their Attributes from array "events" -->
       <v-calendar
           ref="calendar"
-          v-model="focus"
+          v-model="firstFocus"
           color="primary"
           :events="events"
           :event-color="getEventColor"
@@ -45,9 +54,12 @@
           @click:more="viewDay"
           @click:date="viewDay"
         ></v-calendar>
+        <!-- The calendar Obejct is made with "v-calendar" -->
+        <!-- It gets the Events with their Attributes from array "events" -->
+        <!-- The second Calendar for the second Month -->
       <v-calendar
           ref="calendar"
-          v-model="focus2"
+          v-model="secondFocus"
           color="primary"
           :events="events"
           :event-color="getEventColor"
@@ -56,6 +68,8 @@
           @click:more="viewDay"
           @click:date="viewDay"
         ></v-calendar>
+
+        <!-- If a event is selected, a popup menu opens -->
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -67,6 +81,7 @@
             min-width="350px"
             flat
           >
+            <!-- Every Attribute of the selected Event is getting displayed -->
             <v-toolbar
                 :color="selectedEvent.color"
                 dark
@@ -81,26 +96,28 @@
               <v-divider></v-divider>
               <v-list-item-title class="font-weight-bold">Klasse:</v-list-item-title>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details1"></span>
+              <span v-html="selectedEvent.class"></span>
               <v-divider></v-divider>
               <v-list-item-title class="font-weight-bold">Gruppengrösse:</v-list-item-title>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details2"></span>
+              <span v-html="selectedEvent.groupsize"></span>
               <v-divider></v-divider>
               <v-list-item-title class="font-weight-bold">Schüler:</v-list-item-title>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details3"></span>
+              <span v-html="selectedEvent.student1"></span>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details4"></span>
+              <span v-html="selectedEvent.student2"></span>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details5"></span>
+              <span v-html="selectedEvent.student3"></span>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details6"></span>
+              <span v-html="selectedEvent.student4"></span>
               <v-divider></v-divider>
               <v-list-item-title class="font-weight-bold">Lehrer:</v-list-item-title>
               <v-divider></v-divider>
-              <span v-html="selectedEvent.details7"></span>
+              <span v-html="selectedEvent.teacher"></span>
             </v-card-text>
+
+            <!-- To close the Menu of a Event -->
             <v-card-actions>
               <v-btn
                 text
@@ -118,87 +135,100 @@
 
 <script>
   export default {
+    /* Variables are getting declared, "focus" is for the startdate of a calendar */
+    /* "Events" is a Array with all the Events displayed in the calendars */
+    /* "Colors" are static and are later random mixed by a method */
     data: () => ({
-      focus: new Date(),
-      focus2: new Date(),
+      firstFocus: new Date(),
+      secondFocus: new Date(),
       type: 'month',
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       events: [],
-      copyEvents: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      dates: [],
     }),
 
+    //Is recalled at every reload of the site
     mounted () {
       this.$refs.calendar.checkChange()
+      //Method "initialize" gets called to display all Events
       this.initialize()
+      //For the second calendar a Date is declared (One month after the first calendar)
       let oneMonthLater = new Date(Date.now());
       oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-      this.focus2 = oneMonthLater;
+      this.secondFocus = oneMonthLater;
     },
-    //Funktionsaufrufe beim starten der App (mounted)
     
+    //All the Methods used in the View
     methods: {
-      //fetch um Daten ins Frontend zu laden..
+
+/*    Over Fetch all Records from the Table "Events" are loaded in 
+      (Note: "CODING CONVENTION" needs to be that long because of the Object Parameters) */
       initialize () {
         fetch('api/event')
           .then(response => response.json())
           .then(data => {
               data.forEach(element => {
-                 let event = {
+                 let event = { //for each record a new Object-Array Object is generated
                      name : element.eventname, 
                      start : element.date.substr(0, 10),
+                     //As mentioned a random color is getting selected
                      color: this.colors[this.rnd(0, this.colors.length - 1)],
                      timed: false,
-                     details1: element.class,
-                     details2: element.groupsize,
-                     details3: element.student1,
-                     details4: element.student2,
-                     details5: element.student3,
-                     details6: element.student4,
-                     details7: element.teacher
-                 }
-                this.events.push(event)
-                //console.log(this.events);
-               });
+                     class: element.class,
+                     groupsize: element.groupsize,
+                     student1: element.student1,
+                     student2: element.student2,
+                     student3: element.student3,
+                     student4: element.student4,
+                     teacher: element.teacher}
+                //The created Object-Array is pushed into "events" to display them in the calendars
+                this.events.push(event)});
           });
       },
 
-      //kalender formatierungs-Methoden
+
+    //Calendar Methods
+      //Sets the Focus on the actual day
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
       },
+      //Returns the Color for an Event (random)
       getEventColor (event) {
         return event.color
       },
+      //The current view in the calendar should be empty (date gets generated elsewhere)
       setToday () {
         this.focus = ''
       },
+      //Method for the Button to switch to the previous Month
       prev () {
-        let start1 = new Date(this.focus);
-        let start2 = new Date(this.focus2);
-
-        start1.setMonth(start1.getMonth() - 1);
-        start2.setMonth(start2.getMonth() - 1);
-
-        this.focus = start1;
-        this.focus2 = start2;
+        //Two random Dates are generated
+        let firstStart = new Date(this.firstFocus);
+        let secondStart = new Date(this.secondFocus);
+        //Subtracts one Month from each Date
+        firstStart.setMonth(firstStart.getMonth() - 1);
+        secondStart.setMonth(secondStart.getMonth() - 1);
+        //The new dates are now in the "Focus" Variable for the Calendar
+        this.firstFocus = firstStart;
+        this.secondFocus = secondStart;
       },
-
+      //The same Method as "prev()" but this time one Month gets added to both dates
       next () {
-        let start1 = new Date(this.focus);
-        let start2 = new Date(this.focus2);
+        let firstStart = new Date(this.firstFocus);
+        let secondStart = new Date(this.secondFocus);
+  
+        firstStart.setMonth(firstStart.getMonth() + 1);
+        secondStart.setMonth(secondStart.getMonth() + 1);
 
-        start1.setMonth(start1.getMonth() + 1);
-        start2.setMonth(start2.getMonth() + 1);
-
-        this.focus = start1;
-        this.focus2 = start2;
+        this.firstFocus = firstStart;
+        this.secondFocus = secondStart;
       },
+      //To show information if an event is clicked
       showEvent ({ nativeEvent, event }) {
+        //if an event ic clicked
         const open = () => {
           this.selectedEvent = event
           this.selectedElement = nativeEvent.target
@@ -206,6 +236,7 @@
             this.selectedOpen = true
           }, 10)
         }
+        //if an event gets closed
         if (this.selectedOpen) {
           this.selectedOpen = false
           setTimeout(open, 10)
@@ -214,7 +245,7 @@
         }
         nativeEvent.stopPropagation()
       },
-
+      //Returns random Number for the Color mentioned before
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
