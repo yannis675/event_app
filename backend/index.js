@@ -19,6 +19,7 @@ const JWT = require('jsonwebtoken')
 
 //Serve the frontend
 APP.use(EXPRESS.static('../frontend/dist'));
+APP.use('/', require('./middleware/fallback'))
 
 //Secret hash for Token
 const PEPPER = "secret";
